@@ -4,63 +4,80 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.scene.shape.Circle;
-import javafx.scene.layout.Pane;
-import javafx.scene.Group;
-
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import java.io.InputStream;
+import javafx.stage.Stage;
+import javafx.geometry.Insets;  // Import for Insets
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
+import java.io.InputStream;
 
 public class HelloApplication extends Application {
 
     @Override
-    public void start(Stage stage)  throws FileNotFoundException {
-        // Opprett hovedstrukturen med BorderPane
+    public void start(Stage stage) throws FileNotFoundException {
+        // Create the main structure with BorderPane
         BorderPane root = new BorderPane();
 
-        // Opprett menylinje (MenuBar)
-        InputStream circleImage = new FileInputStream("C:\\Users\\Elling\\Documents\\OBJ1000\\JavaObligHøst24\\images\\Circle.png");
+        // Circle image import
+        InputStream circleImage = new FileInputStream("images/Circle.png");
         Image circleImageImport = new Image(circleImage);
         ImageView imageViewCircle = new ImageView(circleImageImport);
+        imageViewCircle.setFitWidth(35);
+        imageViewCircle.setFitHeight(35);
 
+        // Rectangle image import
+        InputStream rectangleImage = new FileInputStream("images/Rectangle.png");
+        Image rectangleImageImport = new Image(rectangleImage);
+        ImageView imageViewRectangle = new ImageView(rectangleImageImport);
+        imageViewRectangle.setFitWidth(35);
+        imageViewRectangle.setFitHeight(35);
+
+        // Create the MenuBar
         MenuBar menuBar = new MenuBar();
+
+        // file
+        Menu fileMenu = new Menu("File");
+        MenuItem NewItem = new MenuItem("New");
+        MenuItem OpenItem = new MenuItem("Open");
+        MenuItem SaveItem = new MenuItem("Save");
+        MenuItem SaveAsItem = new MenuItem("Save As");
+        fileMenu.getItems().addAll(NewItem, OpenItem, SaveItem, SaveAsItem);
+
+        // viktige funksjonenene
         Menu shapesMenu = new Menu("Shapes");
         MenuItem circleItem = new MenuItem("Circle");
         circleItem.setGraphic(imageViewCircle);
         MenuItem rectangleItem = new MenuItem("Rectangle");
+        rectangleItem.setGraphic(imageViewRectangle);
         shapesMenu.getItems().addAll(circleItem, rectangleItem);
 
+        // Add Colors Menu
         Menu colorMenu = new Menu("Colors");
         MenuItem lineColorItem = new MenuItem("Line Color");
         MenuItem fillColorItem = new MenuItem("Fill Color");
         colorMenu.getItems().addAll(lineColorItem, fillColorItem);
 
-        menuBar.getMenus().addAll(shapesMenu, colorMenu);
+        // Add all menus to the MenuBar
+        menuBar.getMenus().addAll(fileMenu, shapesMenu, colorMenu);
 
-        // Opprett tegneflate (Pane)
+        // Create an HBox container for the MenuBar to add padding and force height
+        HBox menuBarContainer = new HBox();
+        menuBarContainer.setPadding(new Insets(10));  // Adds padding around the MenuBar
+        menuBarContainer.getChildren().add(menuBar);
+        menuBarContainer.setPrefHeight(80);  // Adjust the height of the HBox to make the MenuBar area taller
+
+        // Create drawing area (Pane)
         Pane drawingPane = new Pane();
         drawingPane.setStyle("-fx-background-color: white;");
 
-        /*// Informasjons- og kontrollpanel til høyre (for nå tom)
-        VBox infoPanel = new VBox();
-        infoPanel.setStyle("-fx-border-color: black; -fx-padding: 10;");
-        Label infoLabel = new Label("Information and Controls");
-        infoPanel.getChildren().add(infoLabel);*/
+        // Place the components in the BorderPane
+        root.setTop(menuBarContainer);  // HBox containing MenuBar at the top
+        root.setCenter(drawingPane);    // Drawing Pane in the center
 
-        // Plasser komponentene i BorderPane
-        root.setTop(menuBar);          // MenuBar på toppen
-        root.setCenter(drawingPane);   // Tegneflaten i sentrum
-        // root.setRight(infoPanel);      // Info- og kontrollpanel på høyre side
-
-        // Sett opp scenen
-        Group root1 = new Group(imageViewCircle);
-        Scene scene = new Scene(root, 500, 500);
+        // Set up the scene
+        Scene scene = new Scene(root, 1000, 600);  // Define the scene size
         stage.setTitle("Elling og Safin Paint");
         stage.setScene(scene);
         stage.show();
